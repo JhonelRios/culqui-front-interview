@@ -1,5 +1,7 @@
 # Culqi Interview Frontend
 
+Deployed site: https://curious-bienenstitch-c37b3b.netlify.app/
+
 ### Local development
 
 To execute the function in your local:
