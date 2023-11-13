@@ -1,4 +1,5 @@
 <template>
+  <h2>Generate token:</h2>
   <form ref="formRef" @submit.prevent="handleSubmit">
     <label>
       Card number
@@ -10,7 +11,7 @@
         pattern="[0-9]{13,16}"
         required
         placeholder="Write here"
-        title="Card number must be a number between 13 and 16 characters"
+        title="Card number must be a number between 13 and 16 digits"
       />
     </label>
 
@@ -24,7 +25,7 @@
         pattern="[0-9]{3,4}"
         required
         placeholder="Write here"
-        title="CVV must be a number with 3 or 4 characters"
+        title="CVV must be a number with 3 or 4 digits"
       />
     </label>
 
@@ -39,7 +40,7 @@
           pattern="[0-9]{1,2}"
           required
           placeholder="Write here"
-          title="Expiration month must be a number with 1 or 2 characters"
+          title="Expiration month must be a number with 1 or 2 digits"
         />
       </label>
 
@@ -53,7 +54,7 @@
           pattern="[0-9]{4}"
           required
           placeholder="Write here"
-          title="Expiration year must be a number with 4 characters"
+          title="Expiration year must be a number with 4 digits"
         />
       </label>
     </div>
@@ -64,7 +65,7 @@
       <input v-model="formData.email" type="email" required placeholder="Write here" />
     </label>
 
-    <button type="submit" :disabled="loading">Pay</button>
+    <button type="submit" :disabled="loading">Generate</button>
   </form>
 
   <p v-if="token"><strong>Token: </strong> {{ token }}</p>
