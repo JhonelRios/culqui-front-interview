@@ -1,11 +1,13 @@
 import axios from 'axios';
 import { CardData, CardDataRequestBody } from '../types/card';
+import { PK_TEST } from '../utils/constants';
 
 class TokenService {
   apiUrl: string;
 
   constructor() {
     this.apiUrl = import.meta.env.VITE_API_URL;
+    axios.defaults.headers.common['Authorization'] = `Bearer ${PK_TEST}`;
   }
 
   async tokenize(card: CardData): Promise<{ token: string }> {
@@ -17,9 +19,19 @@ class TokenService {
       expiration_year: card.expirationYear,
     };
 
-    const response = await axios.post(`${this.apiUrl}/tokenize`, body);
+    try {
+      const response = await axios.post(`${this.apiUrl}/tokenize`, body);
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      const errorBody = error.response.data;
+      const errorMessage = Array.isArray(errorBody.error)
+        ? errorBody.error.map(e => e.message).join('')
+        : errorBody.error || errorBody.message;
+
+      throw new Error(errorMessage);
+    }
   }
 
   async getCardByToken(token: string): Promise<{ card: CardDataRequestBody }> {

@@ -64,7 +64,7 @@
       <input v-model="formData.email" type="email" required placeholder="Write here" />
     </label>
 
-    <button type="submit">Pay</button>
+    <button type="submit" :disabled="loading">Pay</button>
   </form>
 
   <p v-if="token"><strong>Token: </strong> {{ token }}</p>
@@ -72,6 +72,8 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
+import { toast } from 'vue3-toastify';
+
 import { CardData } from '../types/card';
 import { tokenService } from '../services/TokenService';
 
@@ -85,18 +87,26 @@ const formData = reactive<CardData>({
   email: '',
 });
 
+const loading = ref(false);
 const token = ref('');
 
 const handleSubmit = async () => {
+  loading.value = true;
+
   try {
     const response = await tokenService.tokenize(formData);
 
     token.value = response.token;
 
     formRef.value?.reset();
+    toast.success('The token was generated');
   } catch (error) {
-    console.error(error);
+    toast.error(error.message);
+
+    token.value = '';
   }
+
+  loading.value = false;
 };
 </script>
 
