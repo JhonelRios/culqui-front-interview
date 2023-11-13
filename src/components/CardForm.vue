@@ -1,42 +1,104 @@
 <template>
-  <form>
+  <form ref="formRef" @submit.prevent="handleSubmit">
     <label>
       Card number
 
-      <input type="text" pattern="[0-9]+" required placeholder="Write here" />
+      <input
+        v-model="formData.cardNumber"
+        type="text"
+        inputmode="numeric"
+        pattern="[0-9]{13,16}"
+        required
+        placeholder="Write here"
+        title="Card number must be a number between 13 and 16 characters"
+      />
     </label>
 
     <label>
       CVV
 
-      <input type="text" pattern="[0-9]+" required placeholder="Write here" />
+      <input
+        v-model="formData.cvv"
+        type="text"
+        inputmode="numeric"
+        pattern="[0-9]{3,4}"
+        required
+        placeholder="Write here"
+        title="CVV must be a number with 3 or 4 characters"
+      />
     </label>
 
     <div class="date">
       <label>
         Expiration month
 
-        <input type="text" pattern="[0-9]+" required placeholder="Write here" />
+        <input
+          v-model="formData.expirationMonth"
+          type="text"
+          inputmode="numeric"
+          pattern="[0-9]{1,2}"
+          required
+          placeholder="Write here"
+          title="Expiration month must be a number with 1 or 2 characters"
+        />
       </label>
 
       <label>
-        Expiration Year
+        Expiration year
 
-        <input type="text" pattern="[0-9]+" required placeholder="Write here" />
+        <input
+          v-model="formData.expirationYear"
+          type="text"
+          inputmode="numeric"
+          pattern="[0-9]{4}"
+          required
+          placeholder="Write here"
+          title="Expiration year must be a number with 4 characters"
+        />
       </label>
     </div>
 
     <label>
       Email
 
-      <input type="email" required placeholder="Write here" />
+      <input v-model="formData.email" type="email" required placeholder="Write here" />
     </label>
 
     <button type="submit">Pay</button>
   </form>
+
+  <p v-if="token"><strong>Token: </strong> {{ token }}</p>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { reactive, ref } from 'vue';
+import { CardData } from '../types/card';
+import { tokenService } from '../services/TokenService';
+
+const formRef = ref<HTMLFormElement>();
+
+const formData = reactive<CardData>({
+  cardNumber: '',
+  cvv: '',
+  expirationMonth: '',
+  expirationYear: '',
+  email: '',
+});
+
+const token = ref('');
+
+const handleSubmit = async () => {
+  try {
+    const response = await tokenService.tokenize(formData);
+
+    token.value = response.token;
+
+    formRef.value?.reset();
+  } catch (error) {
+    console.error(error);
+  }
+};
+</script>
 
 <style scoped>
 form {
