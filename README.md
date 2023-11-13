@@ -1,4 +1,4 @@
-# Culqui Interview Frontend
+# Culqi Interview Frontend
 
 ### Local development
 
